@@ -1,0 +1,8 @@
+@(timelines: Seq[Timeline])
+
+  @main("Home") {
+    <h1>Welcome to Timeline!</h1>
+    @for(t <- timelines) {
+      <p><a href="/timeline/@t.id">@t.title</a> <small>@t.createData</small></p>
+    }
+  }

@@ -1,0 +1,3 @@
+GET        /                    controllers.HomeController.index()
+GET        /timeline/:id            controllers.TimelineController.timelines(id: Int)
+GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)

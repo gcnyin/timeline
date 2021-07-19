@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:13.3-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - database
+    environment:
+      - POSTGRES_DB=timeline
+      - POSTGRES_PASSWORD=123456
+networks:
+  database:

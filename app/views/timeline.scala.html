@@ -1,0 +1,21 @@
+@(timeline: Timeline, items: Seq[TimelineItem])
+
+@main(s"Timeline | ${timeline.title}") {
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h4>@timeline.title</h4>
+                <ul class="timeline">
+                @for(e <- items) {
+                    <li>
+                        <a><strong>@e.title</strong></a>
+                        <a class="float-right">@e.recordTime</a>
+                        <p>@e.description</p>
+                    </li>
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-muted mt-5 mb-5 text-center small">Made by Boluotou with ❤️</div>
+}
