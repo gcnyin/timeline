@@ -1,6 +1,17 @@
 version: "3"
 
 services:
+  web:
+    image: timeline
+    ports:
+      - 9000:9000
+    networks:
+      - database
+    environment:
+      - DB_JDBC_URL=jdbc:postgresql://postgres:5432/timeline
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=123456
+      - JAVA_OPTS=${JAVA_OPTS}
   postgres:
     image: postgres:13.3-alpine
     restart: always
