@@ -15,8 +15,8 @@ class HomeController @Inject() (val controllerComponents: ControllerComponents, 
     implicit ec: ExecutionContext
 ) extends BaseController {
   def index(): Action[AnyContent] = Action.async {
-    timelineRepository.findRecentCreateTimelines().map { timelines =>
-      Ok(views.html.index(timelines))
+    timelineRepository.selectRecentCreateTimelinesAndTotalCount().map {
+      case (count, timelines) => Ok(views.html.index(count, timelines))
     }
   }
 }

@@ -1,6 +1,5 @@
 package repositories
 
-import cats.data.OptionT
 import models.{Timeline, TimelineItem}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
@@ -73,4 +72,14 @@ class TimelineRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
   def findRecentCreateTimelines(): Future[Seq[Timeline]] = db.run {
     timeline.sortBy(_.createDate.desc).take(20).result
   }
+
+  def selectTimelineCount(): Future[Int] = db.run {
+    timeline.size.result
+  }
+
+  def selectRecentCreateTimelinesAndTotalCount(): Future[(Int, Seq[Timeline])] =
+    for {
+      count <- selectTimelineCount()
+      recentTimelines <- findRecentCreateTimelines()
+    } yield (count, recentTimelines)
 }
