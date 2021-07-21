@@ -1,5 +1,5 @@
 package models
 
-import java.sql.Timestamp
+import java.time.Instant
 
-case class TimelineItem(id: Int, timelineId: Int, title: String, recordTime: Timestamp, description: String)
+case class TimelineItem(id: Int, timelineId: Int, title: String, recordTime: Instant, description: String)

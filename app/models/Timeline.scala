@@ -1,5 +1,11 @@
 package models
 
-import java.sql.Timestamp
+import play.api.libs.json.{Json, OFormat}
 
-case class Timeline(id: Int, title: String, createData: Timestamp)
+import java.time.Instant
+
+case class Timeline(id: Int, title: String, createData: Instant)
+
+object Timeline {
+  implicit val format: OFormat[Timeline] = Json.format[Timeline]
+}

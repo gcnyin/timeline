@@ -5,7 +5,7 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 import slick.lifted.ProvenShape
 
-import java.sql.Timestamp
+import java.time.{Instant, LocalDateTime}
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,7 +24,7 @@ class TimelineRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
 
     def title: Rep[String] = column[String]("title")
 
-    def createDate: Rep[Timestamp] = column[Timestamp]("create_date")
+    def createDate: Rep[Instant] = column[Instant]("create_date")
 
     def * : ProvenShape[Timeline] = (id, title, createDate) <> ((Timeline.apply _).tupled, Timeline.unapply)
   }
@@ -38,11 +38,11 @@ class TimelineRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
 
     def title: Rep[String] = column[String]("title")
 
-    def recordTime: Rep[Timestamp] = column[Timestamp]("record_time")
+    def recordTime: Rep[Instant] = column[Instant]("record_time")
 
     def description: Rep[String] = column[String]("description")
 
-    def * : ProvenShape[TimelineItem] =
+    def * =
       (id, timelineId, title, recordTime, description) <> ((TimelineItem.apply _).tupled, TimelineItem.unapply)
   }
 
@@ -82,4 +82,11 @@ class TimelineRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
       count <- selectTimelineCount()
       recentTimelines <- findRecentCreateTimelines()
     } yield (count, recentTimelines)
+
+  def createTimeline(title: String): Future[Timeline] = db.run {
+    (timeline.map(t => t.title)
+      returning timeline.map(it => (it.id, it.createDate))
+      into ((inputTitle, returnedInfo) => Timeline(returnedInfo._1, inputTitle, returnedInfo._2))
+      ) += title
+  }
 }

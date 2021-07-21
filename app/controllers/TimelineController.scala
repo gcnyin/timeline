@@ -1,7 +1,9 @@
 package controllers
 
+import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.TimelineRepository
+import requests.CreateTimeline
 
 import javax.inject._
 import scala.concurrent.ExecutionContext
@@ -18,5 +20,9 @@ class TimelineController @Inject() (
         Ok(views.html.timeline(value._1, value._2.sortBy(_.recordTime)))
       }
     }
+  }
+
+  def createTimeline(): Action[CreateTimeline] = Action.async(parse.json[CreateTimeline]) { request =>
+    timelineRepository.createTimeline(request.body.title).map(it => Ok(Json.toJson(it)))
   }
 }

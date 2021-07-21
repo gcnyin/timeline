@@ -1,3 +1,4 @@
-GET        /                    controllers.HomeController.index()
-GET        /timeline/:id            controllers.TimelineController.timelines(id: Int)
-GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
+GET         /                    controllers.HomeController.index()
+GET         /timeline/:id        controllers.TimelineController.timelines(id: Int)
+POST        /timeline            controllers.TimelineController.createTimeline()
+GET         /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
