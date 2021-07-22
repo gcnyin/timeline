@@ -1,11 +1,12 @@
 package repositories
 
+import cats.data.OptionT
 import models.{Timeline, TimelineItem}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 import slick.lifted.ProvenShape
 
-import java.time.{Instant, LocalDateTime}
+import java.time.Instant
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,23 +51,18 @@ class TimelineRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
 
   def findTimelineInfoById(id: Int): Future[Option[(Timeline, Seq[TimelineItem])]] = {
     for {
-      optionTimeline <- findTimelineById(id)
-      optionItems <- findTimelineItemsByTimelineId(optionTimeline.map(_.id))
-    } yield for {
-      timeline <- optionTimeline
-      items <- optionItems
-    } yield (timeline, items)
-  }
+      timeline <- OptionT(findTimelineById(id))
+      v <- OptionT.liftF(findTimelineItemsByTimelineId(timeline.id))
+    } yield (timeline, v)
+  }.value
 
   def findTimelineById(id: Int): Future[Option[Timeline]] = db.run {
     timeline.filter(_.id === id).result.headOption
   }
 
-  def findTimelineItemsByTimelineId(optionId: Option[Int]): Future[Option[Seq[TimelineItem]]] =
-    optionId.fold(Future.successful(Option.empty[Seq[TimelineItem]])) { timelineId =>
-      db.run {
-        timelineItem.filter(_.timelineId === timelineId).result
-      }.map(Option(_))
+  def findTimelineItemsByTimelineId(timelineId: Int): Future[Seq[TimelineItem]] =
+    db.run {
+      timelineItem.filter(_.timelineId === timelineId).result
     }
 
   def findRecentCreateTimelines(): Future[Seq[Timeline]] = db.run {
