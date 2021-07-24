@@ -1,9 +1,11 @@
 sealed trait Option[+A] {
-  def filter(f: A => Boolean): Option[A] = None
+  def filter(f: A => Boolean): Option[A]
 
-  def map[B](f: A => B): Option[B] = None
+  def map[B](f: A => B): Option[B]
 
-  def flatMap[B](f: A => Option[B]): Option[B] = None
+  def flatMap[B](f: A => Option[B]): Option[B]
+
+  def foreach(f: A => Unit): Unit
 }
 
 case class Some[+A](value: A) extends Option[A] {
@@ -18,9 +20,19 @@ case class Some[+A](value: A) extends Option[A] {
   override def map[B](f: A => B): Option[B] = Some(f(value))
 
   override def flatMap[B](f: A => Option[B]): Option[B] = f(value)
+
+  override def foreach(f: A => Unit): Unit = f(value)
 }
 
-case object None extends Option[Nothing]
+case object None extends Option[Nothing] {
+  override def filter(f: Nothing => Boolean): Option[Nothing] = None
+
+  override def map[B](f: Nothing => B): Option[Nothing] = None
+
+  override def flatMap[B](f: Nothing => Option[B]): Option[Nothing] = None
+
+  override def foreach(f: Nothing => Unit): Unit = {}
+}
 
 // +++++++++++++++++++++++++++
 // ++++++++ examples +++++++++
@@ -46,3 +58,12 @@ val a3: Option[Int] = for {
 } yield a1 + a2
 
 println(a3 eq None)
+
+for (a <- i) {
+  println(a)
+}
+
+for (a <- j) {
+  println(a)
+}
+
