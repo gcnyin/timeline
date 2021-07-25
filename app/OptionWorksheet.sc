@@ -8,14 +8,13 @@ sealed trait Option[+A] {
   def foreach(f: A => Unit): Unit
 }
 
-case class Some[+A](value: A) extends Option[A] {
-  override def filter(f: A => Boolean): Option[A] = {
-    if (f(value)) {
-      this
-    } else {
-      None
-    }
-  }
+/**
+ * @param value 真正的值
+ * @tparam A neo蜀黍强调，Some从语义上讲，不应该支持协变
+ */
+case class Some[A](value: A) extends Option[A] {
+  override def filter(f: A => Boolean): Option[A] =
+    if (f(value)) this else None
 
   override def map[B](f: A => B): Option[B] = Some(f(value))
 
@@ -66,4 +65,3 @@ for (a <- i) {
 for (a <- j) {
   println(a)
 }
-
