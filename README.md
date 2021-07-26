@@ -1,6 +1,6 @@
 # Timeline
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![GitHub](https://img.shields.io/github/license/gcnyin/timeline)
 
 A web application.
 
